@@ -1,0 +1,87 @@
+{
+  "project": "webhook-inspector",
+  "last_updated": "2026-05-26T00:00:00Z",
+  "current_task": {
+    "id": "TASK-002",
+    "phase": "Phase 2-2",
+    "title": "Spring Boot 프로젝트 설정 완료",
+    "status": "completed",
+    "description": "build.gradle 의존성 점검 완료. application.yml 환경 변수 설정 완료 (SUPABASE_JWT_SECRET, AWS_REGION, DYNAMODB_TABLE_NAME, SQS_QUEUE_URL). spring.cloud.aws.region.static 설정 추가.",
+    "related_docs": [
+      "plan/ROADMAP.md",
+      "plan/TechSpec.md"
+    ],
+    "next_steps": [
+      "Phase 2-4: DynamoDbClient Bean 설정 및 User 레코드 관리",
+      "Phase 2-5: GET /v1/webhook-url, PATCH /v1/webhook-url 구현"
+    ]
+  },
+  "completed_tasks": [
+    {
+      "id": "TASK-000",
+      "title": "계획 문서 작성",
+      "status": "completed",
+      "completed_at": "2026-05-26T00:00:00Z",
+      "summary": "PRD, APISpec, ArchSpec, TechSpec, Diagrams, ROADMAP 문서 작성 완료. plan/ 폴더에 위치."
+    },
+    {
+      "id": "TASK-001",
+      "title": "에이전트 작업 환경 초기화",
+      "status": "completed",
+      "completed_at": "2026-05-26T00:00:00Z",
+      "summary": "CLAUDE.md(60줄 이내)와 process_state.json 생성. 작업 재개 절차 및 디렉토리 구조 문서화."
+    }
+  ],
+  "upcoming_tasks": [
+    {
+      "id": "TASK-002",
+      "title": "백엔드 프로젝트 초기화",
+      "phase": "implementation",
+      "description": "Spring Boot 3.x + Gradle 프로젝트 생성. 패키지 구조, build.gradle, application.yml 설정.",
+      "related_docs": ["plan/TechSpec.md", "plan/ArchSpec.md"]
+    },
+    {
+      "id": "TASK-003",
+      "title": "MOD-001: AuthModule 구현",
+      "phase": "implementation",
+      "description": "Supabase JWT 검증 필터 (OncePerRequestFilter). SUPABASE_JWT_SECRET 환경변수 기반 HS256 검증.",
+      "related_docs": ["plan/ArchSpec.md", "plan/TechSpec.md", "plan/APISpec.md"]
+    },
+    {
+      "id": "TASK-004",
+      "title": "MOD-002: UrlModule 구현",
+      "phase": "implementation",
+      "description": "User 레코드 lazy 생성, UUID v4 웹훅 URL 발급, 활성화/비활성화 토글. DynamoDB DM-001.",
+      "related_docs": ["plan/ArchSpec.md", "plan/TechSpec.md", "plan/APISpec.md"]
+    },
+    {
+      "id": "TASK-005",
+      "title": "MOD-003 + MOD-004: Ingestion 구현",
+      "phase": "implementation",
+      "description": "IngestionController (POST /{uuid} 수신 → SQS enqueue) + WorkerService (@SqsListener → DynamoDB 저장).",
+      "related_docs": ["plan/ArchSpec.md", "plan/TechSpec.md", "plan/APISpec.md"]
+    },
+    {
+      "id": "TASK-006",
+      "title": "MOD-005 + MOD-006: Realtime 구현",
+      "phase": "implementation",
+      "description": "WebSocketHandler (연결 세션 DynamoDB 저장) + PushSender (SimpMessagingTemplate Push).",
+      "related_docs": ["plan/ArchSpec.md", "plan/TechSpec.md", "plan/APISpec.md"]
+    },
+    {
+      "id": "TASK-007",
+      "title": "프론트엔드 구현",
+      "phase": "implementation",
+      "description": "React 18 + Vite 대시보드. Supabase JS SDK 인증, STOMP.js WebSocket 실시간 수신, 이력 조회 UI.",
+      "related_docs": ["plan/PRD.md", "plan/APISpec.md", "plan/TechSpec.md"]
+    },
+    {
+      "id": "TASK-008",
+      "title": "AWS 인프라 세팅",
+      "phase": "deployment",
+      "description": "ALB, EC2 ASG, SQS, DynamoDB, S3+CloudFront, CloudWatch 콘솔 직접 설정.",
+      "related_docs": ["plan/ArchSpec.md", "plan/TechSpec.md"]
+    }
+  ],
+  "notes": "작업 재개 시 current_task.status가 'in_progress'이면 해당 related_docs를 우선 참조. 태스크 완료 시 current_task를 completed_tasks로 이동하고 upcoming_tasks[0]을 current_task로 갱신할 것."
+}

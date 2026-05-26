@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: webhook-inspector
+  cloud:
+    aws:
+      region:
+        static: ${AWS_REGION:ap-northeast-2}
+
+supabase:
+  jwt-secret: ${SUPABASE_JWT_SECRET}
+
+aws:
+  dynamodb:
+    table-name: ${DYNAMODB_TABLE_NAME:webhook-inspector-main}
+  sqs:
+    queue-url: ${SQS_QUEUE_URL}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+server:
+  port: 8080
