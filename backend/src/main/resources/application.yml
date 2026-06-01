@@ -4,16 +4,19 @@ spring:
   cloud:
     aws:
       region:
-        static: ${AWS_REGION:ap-northeast-2}
+        static: ${AWS_REGION}
 
 supabase:
   jwt-secret: ${SUPABASE_JWT_SECRET}
 
 aws:
   dynamodb:
-    table-name: ${DYNAMODB_TABLE_NAME:webhook-inspector-main}
+    table-name: ${DYNAMODB_TABLE_NAME}
   sqs:
     queue-url: ${SQS_QUEUE_URL}
+
+app:
+  webhook-base-url: ${APP_WEBHOOK_BASE_URL}
 
 management:
   endpoints:
