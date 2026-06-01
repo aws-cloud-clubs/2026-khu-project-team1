@@ -52,6 +52,7 @@ frontend/.env
 
 ### Claude Code ###
 .claude/
+.omc/
 
 ### Logs ###
 *.log
