@@ -1,19 +1,21 @@
 {
   "project": "webhook-inspector",
-  "last_updated": "2026-05-26T00:00:00Z",
+  "last_updated": "2026-06-02T00:00:00Z",
   "current_task": {
-    "id": "TASK-002",
-    "phase": "Phase 2-2",
-    "title": "Spring Boot 프로젝트 설정 완료",
+    "id": "TASK-009",
+    "phase": "Phase 3-4",
+    "title": "이력 조회 API 구현 (history 패키지)",
     "status": "completed",
-    "description": "build.gradle 의존성 점검 완료. application.yml 환경 변수 설정 완료 (SUPABASE_JWT_SECRET, AWS_REGION, DYNAMODB_TABLE_NAME, SQS_QUEUE_URL). spring.cloud.aws.region.static 설정 추가.",
+    "branch": "feat/history",
+    "description": "webhook_inspector.history 패키지 5개 파일 생성: HistoryController(GET /v1/webhooks, GET /v1/webhooks/{webhook_id}), HistoryService(user-events-index GSI 최신순 Query + 메모리 슬라이스, 상세 조회 시 소유자 검증 403/미존재 404), HistoryListItem/HistoryListResponse/HistoryDetailResponse DTO. body_preview 200자 truncate, limit 기본 20·max 100 clamp. EVENT# PK 스킴(WorkerService 일치). history 패키지 컴파일 클린 확인.",
     "related_docs": [
       "plan/ROADMAP.md",
-      "plan/TechSpec.md"
+      "plan/APISpec.md"
     ],
     "next_steps": [
-      "Phase 2-4: DynamoDbClient Bean 설정 및 User 레코드 관리",
-      "Phase 2-5: GET /v1/webhook-url, PATCH /v1/webhook-url 구현"
+      "이 브랜치 단독 빌드는 realtime.PushSender, auth.WebSocketAuthInterceptor 미구현으로 실패 (Phase 4 별도 브랜치 범위, 정상)",
+      "IngestionService.java:38 GSI 이름 버그: 'GSI-UUID' -> 실제 'uuid-index'로 수정 필요 (ingestion 담당)",
+      "Phase 4: realtime(PushSender/PushPayload/WebSocketEventHandler) + auth(WebSocketAuthInterceptor) 구현"
     ]
   },
   "completed_tasks": [
