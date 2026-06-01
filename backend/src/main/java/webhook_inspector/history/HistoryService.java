@@ -17,8 +17,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class HistoryService {
 
-    // user-events-index: PK = user_id, SK = received_at, Projection = All
-    private static final String USER_EVENTS_INDEX = "user-events-index";
+    // user_id(PK) + received_at(SK) 기준 인덱스, Projection = All
+    private static final String USER_EVENTS_INDEX = "GSI-userId-receivedAt";
 
     // DynamoDB는 offset/total을 네이티브로 지원하지 않으므로 최신순 최대 건수만 조회 후 메모리에서 슬라이스.
     private static final int MAX_FETCH = 1000;
