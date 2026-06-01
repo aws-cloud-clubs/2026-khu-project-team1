@@ -17,17 +17,21 @@ export default function WebhookUrlCard() {
 
   const handleCopy = async () => {
     if (!data) return
-    await navigator.clipboard.writeText(data.webhookUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(data.webhook_url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      setError('클립보드 복사에 실패했습니다.')
+    }
   }
 
   const handleToggle = async () => {
     if (!data || toggling) return
     setToggling(true)
     try {
-      const updated = await updateIsActive(!data.isActive)
-      setData(updated)
+      const updated = await updateIsActive(!data.is_active)
+      setData({ ...data, is_active: updated.is_active })
     } catch {
       setError('상태 변경에 실패했습니다.')
     } finally {
@@ -59,23 +63,23 @@ export default function WebhookUrlCard() {
           onClick={handleToggle}
           disabled={toggling}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 ${
-            data?.isActive ? 'bg-indigo-600' : 'bg-gray-600'
+            data?.is_active ? 'bg-indigo-600' : 'bg-gray-600'
           }`}
         >
           <span
             className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-              data?.isActive ? 'translate-x-6' : 'translate-x-1'
+              data?.is_active ? 'translate-x-6' : 'translate-x-1'
             }`}
           />
         </button>
       </div>
 
       <p className="text-xs text-gray-400">
-        {data?.isActive ? '활성 — 웹훅을 수신 중입니다.' : '비활성 — 웹훅을 수신하지 않습니다.'}
+        {data?.is_active ? '활성 — 웹훅을 수신 중입니다.' : '비활성 — 웹훅을 수신하지 않습니다.'}
       </p>
 
       <div className="flex items-center gap-2 bg-gray-800 rounded-lg px-4 py-3">
-        <span className="flex-1 text-sm text-gray-300 truncate">{data?.webhookUrl}</span>
+        <span className="flex-1 text-sm text-gray-300 truncate">{data?.webhook_url}</span>
         <button
           onClick={handleCopy}
           className="shrink-0 text-xs text-indigo-400 hover:text-indigo-300 font-medium"

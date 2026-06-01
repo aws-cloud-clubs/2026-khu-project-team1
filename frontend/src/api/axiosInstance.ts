@@ -1,6 +1,12 @@
 import axios from 'axios'
 import { supabase } from '../lib/supabase'
 
+declare module 'axios' {
+  export interface InternalAxiosRequestConfig {
+    _retry?: boolean
+  }
+}
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
 })
@@ -16,11 +22,13 @@ api.interceptors.request.use(async (config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
+    const original = error.config
+    if (error.response?.status === 401 && original && !original._retry) {
+      original._retry = true
       const { data: { session } } = await supabase.auth.refreshSession()
       if (session?.access_token) {
-        error.config.headers.Authorization = `Bearer ${session.access_token}`
-        return api.request(error.config)
+        original.headers.Authorization = `Bearer ${session.access_token}`
+        return api.request(original)
       }
       await supabase.auth.signOut()
     }
