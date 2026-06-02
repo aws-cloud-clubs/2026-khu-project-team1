@@ -2,23 +2,43 @@
   "project": "webhook-inspector",
   "last_updated": "2026-06-02T00:00:00Z",
   "current_task": {
-    "id": "TASK-009",
-    "phase": "Phase 3-4",
-    "title": "이력 조회 API 구현 (history 패키지)",
+    "id": "TASK-011",
+    "phase": "Phase 4",
+    "title": "실시간 푸시 구현 (realtime 패키지) — MOD-006",
     "status": "completed",
-    "branch": "feat/history",
-    "description": "webhook_inspector.history 패키지 5개 파일 생성: HistoryController(GET /v1/webhooks, GET /v1/webhooks/{webhook_id}), HistoryService(user-events-index GSI 최신순 Query + 메모리 슬라이스, 상세 조회 시 소유자 검증 403/미존재 404), HistoryListItem/HistoryListResponse/HistoryDetailResponse DTO. body_preview 200자 truncate, limit 기본 20·max 100 clamp. EVENT# PK 스킴(WorkerService 일치). history 패키지 컴파일 클린 확인.",
+    "branch": "feat/realtime",
+    "description": "feat/realtime 브랜치(develop 기준 신규)에서 realtime 패키지 2개 파일 구현. (1) PushPayload(record): EVT-003 푸시 DTO. 필드 type/id/user_id/method/received_at/content_type/body_preview, snake_case @JsonProperty. 식별자명은 'id'로 확정(history.HistoryListItem과 일치). type 상수 TYPE_NEW_WEBHOOK='NEW_WEBHOOK'. path 필드는 APISpec EVT-003 스키마에 없어 미포함. (2) PushSender(@Component): WorkerService가 호출하는 push(SqsMessage) 시그니처. SqsMessage→PushPayload 변환(body 200자 truncate, null 안전) 후 SimpMessagingTemplate.convertAndSendToUser(userId, '/queue/webhooks', payload)로 소유자에게만 전송. realtime 2개 파일 컴파일 클린 확인.",
     "related_docs": [
       "plan/ROADMAP.md",
       "plan/APISpec.md"
     ],
     "next_steps": [
-      "이 브랜치 단독 빌드는 realtime.PushSender, auth.WebSocketAuthInterceptor 미구현으로 실패 (Phase 4 별도 브랜치 범위, 정상)",
-      "IngestionService.java:38 GSI 이름 버그: 'GSI-UUID' -> 실제 'uuid-index'로 수정 필요 (ingestion 담당)",
-      "Phase 4: realtime(PushSender/PushPayload/WebSocketEventHandler) + auth(WebSocketAuthInterceptor) 구현"
+      "통합 계약 점검 완료: Principal.name=user_id(WebSocketAuthInterceptor) == convertAndSendToUser 라우팅 키 == IngestionService 소유자 user_id == 대시보드 JWT sub. 목적지 /user prefix + /queue 브로커 일치. SimpMessagingTemplate 빈 자동 생성. 라우팅/직렬화 계약 모두 일치 → develop 병합 시 정상 동작 예상.",
+      "이 브랜치 단독 빌드는 WebSocketConfig가 참조하는 auth.WebSocketAuthInterceptor 미존재로 실패(websocket-auth 브랜치 소유, 정상). realtime 2개 파일은 컴파일 클린.",
+      "★ develop 통합 시 필수: SecurityConfig의 /ws/** permitAll 실제 반영(현재 websocket-auth 브랜치엔 TODO 주석만). 누락 시 핸드셰이크 401로 연결 불가.",
+      "문서 정정 필요: APISpec EVT-003 스키마의 'webhook_id' → 'id'로 수정(코드는 id로 구현됨).",
+      "SockJS 결정: 현행 유지(.withSockJS()). 프론트 팀원이 SockJS 클라이언트로 연결 중. raw wscat 테스트는 불가하며 통합 단계에서 SockJS 호환 클라이언트로 검증.",
+      "A안 유지: WsConnection DynamoDB 저장/조회 미구현 → APISpec WS-001의 429(연결 3개 제한) 미구현. ALB sticky session 전제.",
+      "기존 미해결(ingestion 담당): IngestionService.java GSI 이름 'GSI-UUID' → 실제 'uuid-index'로 수정 필요. realtime 범위 아님."
     ]
   },
   "completed_tasks": [
+    {
+      "id": "TASK-010",
+      "title": "WebSocket 인증 구현 (auth 패키지)",
+      "status": "completed",
+      "completed_at": "2026-06-02T00:00:00Z",
+      "branch": "feat/websocket-auth",
+      "summary": "B 방식(STOMP CONNECT 헤더 인증). JwtVerifier 추출(HS256 공통 검증, REST/WS 공용)·JwtVerificationFilter 리팩터·WebSocketAuthInterceptor 신규(CONNECT 프레임 Authorization: Bearer 헤더 검증→Principal=JWT sub=user_id)·SecurityConfig /ws/** permitAll TODO 주석. PR 제출 완료(commit 347c785). 식별자 필드명 'id' 결정을 realtime 브랜치에 전달."
+    },
+    {
+      "id": "TASK-009",
+      "title": "이력 조회 API 구현 (history 패키지)",
+      "status": "completed",
+      "completed_at": "2026-06-02T00:00:00Z",
+      "branch": "feat/history",
+      "summary": "history 패키지 5개: HistoryController/HistoryService(user-events-index GSI 최신순 Query, 소유자 검증 403/404) + DTO 3종. body_preview 200자 truncate, limit 20기본·100max clamp. PR #6 머지 완료."
+    },
     {
       "id": "TASK-000",
       "title": "계획 문서 작성",
@@ -36,54 +56,26 @@
   ],
   "upcoming_tasks": [
     {
-      "id": "TASK-002",
-      "title": "백엔드 프로젝트 초기화",
-      "phase": "implementation",
-      "description": "Spring Boot 3.x + Gradle 프로젝트 생성. 패키지 구조, build.gradle, application.yml 설정.",
-      "related_docs": ["plan/TechSpec.md", "plan/ArchSpec.md"]
-    },
-    {
-      "id": "TASK-003",
-      "title": "MOD-001: AuthModule 구현",
-      "phase": "implementation",
-      "description": "Supabase JWT 검증 필터 (OncePerRequestFilter). SUPABASE_JWT_SECRET 환경변수 기반 HS256 검증.",
-      "related_docs": ["plan/ArchSpec.md", "plan/TechSpec.md", "plan/APISpec.md"]
-    },
-    {
-      "id": "TASK-004",
-      "title": "MOD-002: UrlModule 구현",
-      "phase": "implementation",
-      "description": "User 레코드 lazy 생성, UUID v4 웹훅 URL 발급, 활성화/비활성화 토글. DynamoDB DM-001.",
-      "related_docs": ["plan/ArchSpec.md", "plan/TechSpec.md", "plan/APISpec.md"]
-    },
-    {
-      "id": "TASK-005",
-      "title": "MOD-003 + MOD-004: Ingestion 구현",
-      "phase": "implementation",
-      "description": "IngestionController (POST /{uuid} 수신 → SQS enqueue) + WorkerService (@SqsListener → DynamoDB 저장).",
-      "related_docs": ["plan/ArchSpec.md", "plan/TechSpec.md", "plan/APISpec.md"]
-    },
-    {
-      "id": "TASK-006",
-      "title": "MOD-005 + MOD-006: Realtime 구현",
-      "phase": "implementation",
-      "description": "WebSocketHandler (연결 세션 DynamoDB 저장) + PushSender (SimpMessagingTemplate Push).",
-      "related_docs": ["plan/ArchSpec.md", "plan/TechSpec.md", "plan/APISpec.md"]
+      "id": "TASK-012",
+      "title": "develop 통합 (websocket-auth + realtime 병합)",
+      "phase": "integration",
+      "description": "feat/websocket-auth와 feat/realtime을 develop에 병합. 병합 후 전체 컴파일 확인. ★SecurityConfig /ws/** permitAll 실제 반영. WebSocket 핸드셰이크→STOMP CONNECT 인증→convertAndSendToUser 푸시 E2E 검증(SockJS 호환 클라이언트).",
+      "related_docs": ["plan/APISpec.md", "plan/ArchSpec.md"]
     },
     {
       "id": "TASK-007",
       "title": "프론트엔드 구현",
       "phase": "implementation",
-      "description": "React 18 + Vite 대시보드. Supabase JS SDK 인증, STOMP.js WebSocket 실시간 수신, 이력 조회 UI.",
+      "description": "React 18 + Vite 대시보드. Supabase JS SDK 인증, STOMP.js(SockJS) WebSocket 실시간 수신, 이력 조회 UI. connectHeaders { Authorization: 'Bearer ' + jwt }, 구독 /user/queue/webhooks. (팀원 진행 중)",
       "related_docs": ["plan/PRD.md", "plan/APISpec.md", "plan/TechSpec.md"]
     },
     {
       "id": "TASK-008",
       "title": "AWS 인프라 세팅",
       "phase": "deployment",
-      "description": "ALB, EC2 ASG, SQS, DynamoDB, S3+CloudFront, CloudWatch 콘솔 직접 설정.",
+      "description": "ALB(sticky session), EC2 ASG, SQS, DynamoDB, S3+CloudFront, CloudWatch 콘솔 직접 설정.",
       "related_docs": ["plan/ArchSpec.md", "plan/TechSpec.md"]
     }
   ],
-  "notes": "작업 재개 시 current_task.status가 'in_progress'이면 해당 related_docs를 우선 참조. 태스크 완료 시 current_task를 completed_tasks로 이동하고 upcoming_tasks[0]을 current_task로 갱신할 것."
+  "notes": "작업 재개 시 current_task.status가 'in_progress'이면 해당 related_docs를 우선 참조. 태스크 완료 시 current_task를 completed_tasks로 이동하고 upcoming_tasks[0]을 current_task로 갱신할 것. 도메인별 브랜치 전략: 각 브랜치는 타 도메인 미구현 참조로 단독 컴파일 실패가 정상이며 develop 병합 시 해소."
 }
