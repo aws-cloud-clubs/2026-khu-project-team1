@@ -2,23 +2,34 @@
   "project": "webhook-inspector",
   "last_updated": "2026-06-02T00:00:00Z",
   "current_task": {
-    "id": "TASK-009",
-    "phase": "Phase 3-4",
-    "title": "이력 조회 API 구현 (history 패키지)",
+    "id": "TASK-010",
+    "phase": "Phase 4",
+    "title": "WebSocket 인증 구현 (auth 패키지)",
     "status": "completed",
-    "branch": "feat/history",
-    "description": "webhook_inspector.history 패키지 5개 파일 생성: HistoryController(GET /v1/webhooks, GET /v1/webhooks/{webhook_id}), HistoryService(user-events-index GSI 최신순 Query + 메모리 슬라이스, 상세 조회 시 소유자 검증 403/미존재 404), HistoryListItem/HistoryListResponse/HistoryDetailResponse DTO. body_preview 200자 truncate, limit 기본 20·max 100 clamp. EVENT# PK 스킴(WorkerService 일치). history 패키지 컴파일 클린 확인.",
+    "branch": "feat/websocket-auth",
+    "description": "B 방식(STOMP CONNECT 헤더 인증) 결정. auth 패키지 작업: (1) JwtVerifier 신규 추출 - HS256 검증 로직 공통 부품, REST/WebSocket 공용. (2) JwtVerificationFilter 리팩터 - 내부 검증을 JwtVerifier 호출로 교체, REST 동작 동일. (3) WebSocketAuthInterceptor 신규 - ChannelInterceptor로 CONNECT 프레임만 가로채 'Authorization: Bearer {jwt}' native 헤더 검증, 성공 시 Principal(=JWT sub=user_id) 지정(이후 convertAndSendToUser 라우팅 키), 실패 시 MessagingException으로 연결 거부. WebSocketConfig에 이미 등록돼 있어 배선 불필요. (4) SecurityConfig - /ws/** permitAll 필요성 TODO 주석만(동작 변화 없음). auth 패키지 컴파일 클린 확인.",
     "related_docs": [
       "plan/ROADMAP.md",
       "plan/APISpec.md"
     ],
     "next_steps": [
-      "이 브랜치 단독 빌드는 realtime.PushSender, auth.WebSocketAuthInterceptor 미구현으로 실패 (Phase 4 별도 브랜치 범위, 정상)",
-      "IngestionService.java:38 GSI 이름 버그: 'GSI-UUID' -> 실제 'uuid-index'로 수정 필요 (ingestion 담당)",
-      "Phase 4: realtime(PushSender/PushPayload/WebSocketEventHandler) + auth(WebSocketAuthInterceptor) 구현"
+      "이 브랜치 단독 빌드는 WorkerService가 참조하는 realtime.PushSender 미구현으로 실패 (realtime 브랜치 범위, 정상). auth 파일 3개는 컴파일 클린.",
+      "결정 사항(realtime 브랜치에 전달): 푸시 페이로드 식별자 필드명은 'id'로 통일(HistoryListItem과 일치). 'webhook_id'(ROADMAP) 미채택.",
+      "결정 사항: A안 채택 - WsConnection DynamoDB 저장/조회 미구현. 따라서 APISpec WS-001의 429(연결 3개 제한)도 미구현. STOMP convertAndSendToUser + ALB sticky session으로 푸시는 정상 동작.",
+      "realtime 머지 시점에 SecurityConfig의 /ws/** permitAll 실제 반영 필요(현재 TODO 주석만 존재).",
+      "프론트엔드는 STOMP/이력 소비 코드 전무(frontend/src/lib/supabase.ts만 존재). 백엔드 우선 결정(Authorization 헤더)이 기준이며, E2E 검증은 수동 STOMP 클라이언트(wscat/Postman STOMP) 필요.",
+      "프론트 STOMP.js connectHeaders 컨벤션: { Authorization: 'Bearer ' + jwt } 로 합의 필요."
     ]
   },
   "completed_tasks": [
+    {
+      "id": "TASK-009",
+      "title": "이력 조회 API 구현 (history 패키지)",
+      "status": "completed",
+      "completed_at": "2026-06-02T00:00:00Z",
+      "branch": "feat/history",
+      "summary": "webhook_inspector.history 패키지 5개 파일: HistoryController/HistoryService(user-events-index GSI 최신순 Query, 소유자 검증 403/404) + DTO 3종. body_preview 200자 truncate, limit 20기본·100max clamp. PR #6 머지 완료."
+    },
     {
       "id": "TASK-000",
       "title": "계획 문서 작성",
