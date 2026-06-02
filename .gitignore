@@ -62,3 +62,6 @@ logs/
 
 ### Process State ###
 process_state/process_state.json
+
+### OMC ###
+.omc
