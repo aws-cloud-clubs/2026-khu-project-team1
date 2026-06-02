@@ -35,7 +35,7 @@ public class IngestionService {
 
         var items = dynamoDbClient.query(QueryRequest.builder()
                 .tableName(tableName)
-                .indexName("GSI-UUID")
+                .indexName("GSI-webhookUuid")
                 .keyConditionExpression("webhook_uuid = :uuid")
                 .expressionAttributeValues(Map.of(":uuid", AttributeValue.fromS(uuid)))
                 .limit(1)
