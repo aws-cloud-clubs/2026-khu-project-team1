@@ -9,6 +9,7 @@ import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -35,10 +36,13 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+        // wrap()은 헤더 복사본을 만들어 setUser()가 원본 메시지에 반영되지 않는다.
+        // getAccessor()로 메시지에 바인딩된 가변 accessor를 얻어야 Principal이 세션에 실제로 붙는다.
+        StompHeaderAccessor accessor =
+                MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
         // CONNECT 프레임에서만 인증 수행. 이후 SUBSCRIBE/SEND 등은 그대로 통과.
-        if (!StompCommand.CONNECT.equals(accessor.getCommand())) {
+        if (accessor == null || !StompCommand.CONNECT.equals(accessor.getCommand())) {
             return message;
         }
 

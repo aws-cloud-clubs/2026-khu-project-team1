@@ -6,7 +6,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
 @TestPropertySource(properties = {
-        "supabase.jwt-secret=test-secret-key-that-is-long-enough-for-hmac",
+        "supabase.jwks-uri=https://example.supabase.co/auth/v1/.well-known/jwks.json",
         "aws.sqs.queue-url=https://sqs.ap-northeast-2.amazonaws.com/123456789/test-queue",
         "aws.dynamodb.table-name=test-table",
         "app.webhook-base-url=https://hook.example.com",

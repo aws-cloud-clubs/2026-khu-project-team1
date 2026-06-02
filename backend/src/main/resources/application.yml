@@ -7,7 +7,7 @@ spring:
         static: ${AWS_REGION}
 
 supabase:
-  jwt-secret: ${SUPABASE_JWT_SECRET}
+  jwks-uri: ${SUPABASE_JWKS_URI}
 
 aws:
   dynamodb:
