@@ -19,8 +19,8 @@ function dedupeMerge(incoming: WebhookListItem[], current: WebhookListItem[]): W
 
 const STATUS_UI: Record<SocketStatus, { dot: string; label: string }> = {
   connected: { dot: 'bg-green-500', label: '실시간 연결됨' },
-  connecting: { dot: 'bg-yellow-500 animate-pulse', label: '연결 중…' },
-  disconnected: { dot: 'bg-gray-500', label: '연결 끊김' },
+  connecting: { dot: 'bg-amber-500 animate-pulse', label: '연결 중…' },
+  disconnected: { dot: 'bg-gray-400', label: '연결 끊김' },
 }
 
 export default function DashboardPage() {
@@ -66,17 +66,17 @@ export default function DashboardPage() {
   const statusUi = STATUS_UI[status]
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      <main className="max-w-2xl mx-auto px-4 py-10 flex flex-col gap-6">
+      <main className="max-w-3xl mx-auto px-6 py-10 flex flex-col gap-6">
         <WebhookUrlCard />
 
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-white font-semibold">수신 이력</h2>
+            <h2 className="text-gray-900 font-semibold">수신 이력</h2>
             <div className="flex items-center gap-2">
               <span className={`w-2 h-2 rounded-full ${statusUi.dot}`} />
-              <span className="text-xs text-gray-400">{statusUi.label}</span>
+              <span className="text-xs text-gray-500">{statusUi.label}</span>
             </div>
           </div>
           <HistoryList
