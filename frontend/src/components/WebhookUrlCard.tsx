@@ -41,43 +41,45 @@ export default function WebhookUrlCard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12 text-gray-400">
-        <div className="w-5 h-5 border-2 border-gray-300 border-t-indigo-600 rounded-full animate-spin" />
+      <div className="flex items-center justify-center py-12 text-[var(--text-faint)]">
+        <div className="w-5 h-5 border-2 border-[var(--border)] border-t-[var(--accent)] rounded-full animate-spin" />
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="rounded-xl bg-red-50 border border-red-100 px-6 py-4 text-red-600 text-sm">
+      <div className="rounded-xl bg-[var(--rose)]/10 border border-[var(--rose)]/30 px-6 py-4 text-[var(--rose)] text-sm">
         {error}
       </div>
     )
   }
 
   return (
-    <div className="rounded-2xl bg-white border border-gray-200 p-6 shadow-sm space-y-4">
+    <div className="rounded-2xl bg-[var(--panel)] border border-[var(--border)] p-6 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-gray-900 font-semibold text-lg">내 Webhook URL</h2>
-        <div className="flex items-center gap-2">
+        <h2 className="font-display text-[var(--text)] font-semibold text-lg tracking-tight flex items-center gap-2">
+          <span className="text-[var(--accent)]">~/</span>webhook-url
+        </h2>
+        <div className="flex items-center gap-2.5">
           <span
-            className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+            className={`text-[11px] font-medium px-2 py-0.5 rounded-full uppercase tracking-wider ${
               data?.is_active
-                ? 'bg-green-50 text-green-700'
-                : 'bg-gray-100 text-gray-500'
+                ? 'bg-[var(--accent-dim)] text-[var(--accent)]'
+                : 'bg-[var(--panel-2)] text-[var(--text-faint)]'
             }`}
           >
-            {data?.is_active ? '활성' : '비활성'}
+            {data?.is_active ? 'active' : 'inactive'}
           </span>
           <button
             onClick={handleToggle}
             disabled={toggling}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 ${
-              data?.is_active ? 'bg-indigo-600' : 'bg-gray-300'
+              data?.is_active ? 'bg-[var(--accent)]' : 'bg-[var(--border)]'
             }`}
           >
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+              className={`inline-block h-4 w-4 transform rounded-full bg-[var(--bg)] shadow transition-transform ${
                 data?.is_active ? 'translate-x-6' : 'translate-x-1'
               }`}
             />
@@ -85,23 +87,24 @@ export default function WebhookUrlCard() {
         </div>
       </div>
 
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-[var(--text-dim)]">
         {data?.is_active
           ? '이 URL로 들어오는 웹훅을 수신 중입니다.'
           : '비활성 상태 — 웹훅을 수신하지 않습니다.'}
       </p>
 
-      <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
-        <span className="flex-1 text-sm text-gray-700 font-mono truncate">{data?.webhook_url}</span>
+      <div className="flex items-center gap-2 bg-[var(--bg-soft)] border border-[var(--border)] rounded-lg px-4 py-3">
+        <span className="text-[var(--accent)] text-sm select-none">$</span>
+        <span className="flex-1 text-sm text-[var(--text)] font-mono truncate">{data?.webhook_url}</span>
         <button
           onClick={handleCopy}
-          className={`shrink-0 text-xs font-medium px-2.5 py-1 rounded-md transition-colors ${
+          className={`shrink-0 text-xs font-medium px-2.5 py-1 rounded-md border transition-colors ${
             copied
-              ? 'bg-green-100 text-green-700'
-              : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+              ? 'bg-[var(--accent-dim)] text-[var(--accent)] border-[var(--accent)]/40'
+              : 'bg-transparent text-[var(--text-dim)] border-[var(--border)] hover:text-[var(--text)] hover:border-[var(--text-faint)]'
           }`}
         >
-          {copied ? '복사됨!' : '복사'}
+          {copied ? '✓ copied' : 'copy'}
         </button>
       </div>
     </div>
