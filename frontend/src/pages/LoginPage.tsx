@@ -24,43 +24,47 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 px-4">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-sm rise">
         <div className="flex flex-col items-center mb-8">
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white text-xl font-bold mb-4 shadow-lg shadow-indigo-600/20">
-            W
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-dim)] text-[var(--accent)] ring-1 ring-[var(--accent)]/30 mb-4">
+            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M13 2 4.5 13.5H11l-1 8.5L19.5 10H13l1-8z" />
+            </svg>
           </span>
-          <h1 className="text-2xl font-bold text-gray-900">Webhook Inspector</h1>
-          <p className="text-gray-500 text-sm mt-1">웹훅을 실시간으로 수신하고 디버깅하세요</p>
+          <h1 className="font-display text-2xl font-bold text-[var(--text)] tracking-tight">
+            Webhook<span className="text-[var(--accent)]">Inspector</span>
+          </h1>
+          <p className="text-[var(--text-dim)] text-sm mt-1">웹훅을 실시간으로 수신하고 디버깅하세요</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-8 shadow-xl shadow-gray-200/50 border border-gray-100">
+        <div className="bg-[var(--panel)] rounded-2xl p-8 border border-[var(--border)] shadow-2xl shadow-black/40">
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">이메일</label>
+              <label className="block text-xs font-medium text-[var(--text-dim)] uppercase tracking-wider mb-1.5">이메일</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg bg-gray-50 text-gray-900 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition"
+                className="w-full px-3.5 py-2.5 rounded-lg bg-[var(--bg-soft)] text-[var(--text)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/30 focus:border-[var(--accent)] transition placeholder:text-[var(--text-faint)]"
                 placeholder="you@example.com"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">비밀번호</label>
+              <label className="block text-xs font-medium text-[var(--text-dim)] uppercase tracking-wider mb-1.5">비밀번호</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg bg-gray-50 text-gray-900 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition"
+                className="w-full px-3.5 py-2.5 rounded-lg bg-[var(--bg-soft)] text-[var(--text)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/30 focus:border-[var(--accent)] transition placeholder:text-[var(--text-faint)]"
                 placeholder="••••••••"
                 required
               />
             </div>
 
             {error && (
-              <p className="text-red-600 text-sm bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+              <p className="text-[var(--rose)] text-sm bg-[var(--rose)]/10 border border-[var(--rose)]/30 rounded-lg px-3 py-2">
                 {error}
               </p>
             )}
@@ -68,21 +72,21 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition-colors disabled:opacity-50 shadow-sm"
+              className="w-full py-2.5 rounded-lg bg-[var(--accent)] hover:brightness-110 text-[var(--bg)] font-semibold transition disabled:opacity-50"
             >
               {loading ? '로그인 중...' : '로그인'}
             </button>
           </form>
 
           <div className="flex items-center my-6">
-            <div className="flex-1 border-t border-gray-200" />
-            <span className="px-3 text-gray-400 text-xs">또는</span>
-            <div className="flex-1 border-t border-gray-200" />
+            <div className="flex-1 border-t border-[var(--border)]" />
+            <span className="px-3 text-[var(--text-faint)] text-xs">또는</span>
+            <div className="flex-1 border-t border-[var(--border)]" />
           </div>
 
           <button
             onClick={handleGoogleLogin}
-            className="w-full py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
+            className="w-full py-2.5 rounded-lg border border-[var(--border)] text-[var(--text-dim)] hover:text-[var(--text)] hover:border-[var(--text-faint)] hover:bg-[var(--panel-2)] text-sm font-medium flex items-center justify-center gap-2 transition-colors"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

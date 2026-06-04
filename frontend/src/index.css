@@ -1,20 +1,93 @@
 @import "tailwindcss";
 
+/* ── Fonts: 개발자 콘솔 톤 (Space Grotesk 디스플레이 + JetBrains Mono 본문/코드) ── */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+/* ── Design tokens ── */
 :root {
-  font-family: system-ui, 'Segoe UI', Roboto, -apple-system, sans-serif;
+  --bg: #0a0e14;
+  --bg-soft: #11161f;
+  --panel: #161c26;
+  --panel-2: #1d2531;
+  --border: #2b3543;
+  --border-soft: #1f2630;
+  --text: #f0f4f8;
+  --text-dim: #9aa6b4;
+  --text-faint: #6b7787;
+  --accent: #4ade80;      /* neon green */
+  --accent-dim: #143a23;
+  --cyan: #38bdf8;
+  --amber: #fbbf24;
+  --rose: #fb7185;
+  --violet: #a78bfa;
+
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
   line-height: 1.5;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: #f8fafc;
-  color: #0f172a;
+  color: var(--text);
+  background-color: var(--bg);
+  /* 은은한 그리드 텍스처 + 상단 네온 글로우 */
+  background-image:
+    radial-gradient(900px 500px at 85% -15%, rgba(74, 222, 128, 0.10), transparent 70%),
+    radial-gradient(700px 400px at 0% 0%, rgba(56, 189, 248, 0.06), transparent 70%),
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 38px 38px, 38px 38px;
+  background-attachment: fixed;
+  min-height: 100vh;
 }
+
+/* 디스플레이 폰트 유틸 */
+.font-display { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.01em; }
+
+/* 스크롤바 (다크) */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; border: 2px solid var(--bg); }
+*::-webkit-scrollbar-thumb:hover { background: #2f3947; }
+
+/* ── 라이브 점 펄스 ── */
+@keyframes live-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+  50% { box-shadow: 0 0 0 5px rgba(74, 222, 128, 0); }
+}
+.live-dot { animation: live-pulse 1.8s ease-in-out infinite; }
+
+/* ── 스켈레톤 shimmer (다크) ── */
+@keyframes shimmer {
+  0% { background-position: -480px 0; }
+  100% { background-position: 480px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #161b22 25%, #1e2530 37%, #161b22 63%);
+  background-size: 480px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+/* ── 실시간 신규 항목 도착 (다크 네온) ── */
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes highlight-fade {
+  0%   { background-color: rgba(74, 222, 128, 0.14); border-color: rgba(74, 222, 128, 0.5); }
+  100% { background-color: var(--panel); border-color: var(--border); }
+}
+.item-new { animation: slide-in 0.28s ease-out, highlight-fade 2.2s ease-out 0.28s; }
+
+/* ── 페이지 로드 스태거 ── */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rise { animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }

@@ -27,7 +27,7 @@ export default function App() {
     return () => subscription.unsubscribe()
   }, [])
 
-  if (loading) return <div className="flex items-center justify-center h-screen">Loading...</div>
+  if (loading) return <div className="flex items-center justify-center h-screen text-[var(--text-faint)] font-mono text-sm">Loading…</div>
 
   return (
     <BrowserRouter>
