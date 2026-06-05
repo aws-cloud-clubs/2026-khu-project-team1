@@ -7,10 +7,10 @@ interface StatsCardProps {
   accent?: 'indigo' | 'green' | 'gray'
 }
 
-// 다크 네온 액센트 (아이콘 배경 + 글로우)
+// 화이트 테마 액센트 (연한 파스텔 배경 + 선명한 아이콘)
 const ACCENT: Record<NonNullable<StatsCardProps['accent']>, string> = {
-  indigo: 'bg-[#1a2740] text-[var(--cyan)] ring-1 ring-[var(--cyan)]/25',
-  green: 'bg-[var(--accent-dim)] text-[var(--accent)] ring-1 ring-[var(--accent)]/30',
+  indigo: 'bg-[#e0f2fe] text-[var(--cyan)] ring-1 ring-[var(--cyan)]/20',
+  green: 'bg-[var(--accent-dim)] text-[var(--accent)] ring-1 ring-[var(--accent)]/25',
   gray: 'bg-[var(--panel-2)] text-[var(--text-faint)] ring-1 ring-[var(--border)]',
 }
 

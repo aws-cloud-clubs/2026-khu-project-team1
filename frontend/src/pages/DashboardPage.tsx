@@ -11,7 +11,12 @@ import type { PushPayload, SocketStatus } from '../hooks/useWebhookSocket'
 import { useCountUp } from '../hooks/useCountUp'
 import { useNow, formatAgo } from '../hooks/useNow'
 
-const MAX_ITEMS = 50
+const MAX_ITEMS = 200
+const BACKEND_FETCH_CAP = 1000
+
+function formatTotal(n: number): string {
+  return n >= BACKEND_FETCH_CAP ? `${BACKEND_FETCH_CAP.toLocaleString()}+` : n.toLocaleString()
+}
 
 function dedupeMerge(incoming: WebhookListItem[], current: WebhookListItem[]): WebhookListItem[] {
   const seen = new Set(incoming.map((i) => i.id))
@@ -94,7 +99,6 @@ export default function DashboardPage() {
 
   const statusUi = STATUS_UI[status]
 
-  // 오늘(로컬 기준) 수신 건수 — 최근 N건 범위 내 계산
   const todayCount = useMemo(() => {
     const start = new Date()
     start.setHours(0, 0, 0, 0)
@@ -116,7 +120,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 rise">
           <StatsCard
             label="총 수신"
-            value={totalDisplay.toLocaleString()}
+            value={total >= BACKEND_FETCH_CAP ? formatTotal(total) : totalDisplay.toLocaleString()}
             accent="indigo"
             icon={
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
