@@ -41,7 +41,13 @@ export interface WebhookDetail {
 
 export async function getWebhookUrl(): Promise<WebhookUrlResponse> {
   const { data } = await api.get<WebhookUrlResponse>('/v1/webhook-url')
-  return data
+  return {
+    ...data,
+    webhook_url: data.webhook_url.replace(
+      'https://webhohoe.com/',
+      'https://api.webhohoe.com/',
+    ),
+  }
 }
 
 export async function updateIsActive(isActive: boolean): Promise<UrlPatchResponse> {
