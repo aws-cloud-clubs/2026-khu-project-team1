@@ -8,6 +8,8 @@ import { getHistoryList } from '../api/webhookApi'
 import type { WebhookListItem } from '../api/webhookApi'
 import { useWebhookSocket } from '../hooks/useWebhookSocket'
 import type { PushPayload, SocketStatus } from '../hooks/useWebhookSocket'
+import { useCountUp } from '../hooks/useCountUp'
+import { useNow, formatAgo } from '../hooks/useNow'
 
 const MAX_ITEMS = 50
 
@@ -99,6 +101,14 @@ export default function DashboardPage() {
     return items.filter((i) => new Date(i.received_at) >= start).length
   }, [items])
 
+  // 카운터 롤업 — 값이 바뀌면 부드럽게 굴러 올라감
+  const totalDisplay = useCountUp(total)
+  const todayDisplay = useCountUp(todayCount)
+
+  // 최근 수신 'N초 전' 라이브 시계 — 1초마다 갱신
+  const now = useNow(1000)
+  const lastReceivedAt = items[0]?.received_at ?? null
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -106,7 +116,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 rise">
           <StatsCard
             label="총 수신"
-            value={total.toLocaleString()}
+            value={totalDisplay.toLocaleString()}
             accent="indigo"
             icon={
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -116,7 +126,7 @@ export default function DashboardPage() {
           />
           <StatsCard
             label="오늘 수신"
-            value={todayCount.toLocaleString()}
+            value={todayDisplay.toLocaleString()}
             accent="green"
             icon={
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -125,8 +135,12 @@ export default function DashboardPage() {
             }
           />
           <StatsCard
-            label="실시간 연결"
-            value={<span className="text-base">{statusUi.label}</span>}
+            label={status === 'connected' ? '최근 수신' : statusUi.label}
+            value={
+              <span className="text-base">
+                {lastReceivedAt ? formatAgo(lastReceivedAt, now) : statusUi.label}
+              </span>
+            }
             accent={status === 'connected' ? 'green' : 'gray'}
             icon={
               <span className={`block h-3 w-3 rounded-full ${statusUi.dot}`} />

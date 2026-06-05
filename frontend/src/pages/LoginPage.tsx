@@ -27,9 +27,10 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm rise">
         <div className="flex flex-col items-center mb-8">
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-dim)] text-[var(--accent)] ring-1 ring-[var(--accent)]/30 mb-4">
-            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M13 2 4.5 13.5H11l-1 8.5L19.5 10H13l1-8z" />
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--accent-dim)] text-[var(--accent)] ring-1 ring-[var(--accent)]/20 mb-4">
+            <svg className="h-7 w-7" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={3.4} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M24 8 V26 A8 8 0 1 1 16 34" />
+              <circle cx="24" cy="8" r="2.6" fill="currentColor" stroke="none" />
             </svg>
           </span>
           <h1 className="font-display text-2xl font-bold text-[var(--text)] tracking-tight">
@@ -38,7 +39,7 @@ export default function LoginPage() {
           <p className="text-[var(--text-dim)] text-sm mt-1">웹훅을 실시간으로 수신하고 디버깅하세요</p>
         </div>
 
-        <div className="bg-[var(--panel)] rounded-2xl p-8 border border-[var(--border)] shadow-2xl shadow-black/40">
+        <div className="bg-[var(--panel)] rounded-2xl p-8 border border-[var(--border)] shadow-lg shadow-slate-200/60">
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-[var(--text-dim)] uppercase tracking-wider mb-1.5">이메일</label>
