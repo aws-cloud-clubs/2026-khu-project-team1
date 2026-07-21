@@ -206,21 +206,30 @@ mkdir -p /opt/webhook-inspector
 ALB는 같은 도메인에서 HTTP와 WebSocket을 동시에 처리할 수 있으므로 WebSocket 전용 서브도메인은 별도로 필요하지 않다. 경로(path)로 구분한다.
 
 ```
-https://api.hook.example.com/v1/...   → REST API
-wss://api.hook.example.com/ws         → WebSocket
+https://api.webhohoe.com/v1/...   → REST API
+wss://api.webhohoe.com/ws         → WebSocket
 ```
 
-**Route 53 (또는 사용 중인 DNS)**
+**Route 53 (실제 구성)**
+
+도메인은 `webhohoe.com`을 사용하며, Route 53 호스팅 영역에서 관리한다.
 
 | 레코드 | 유형 | 값 | 용도 |
 |--------|------|----|------|
-| `api.hook.example.com` | A (Alias) | ALB DNS | REST API + WebSocket |
-| `hook.example.com` | A (Alias) | ALB DNS | 외부 서비스 웹훅 수신 |
-| `dashboard.hook.example.com` | A (Alias) | CloudFront DNS | 대시보드 화면 |
+| `webhohoe.com` | A (Alias) | CloudFront DNS (`d3j0e55je2ro0i.cloudfront.net`) | 대시보드 화면 (프론트엔드) |
+| `api.webhohoe.com` | A (Alias) | ALB DNS (`webhook-inspector-alb-187218606.ap-northeast-2.elb.amazonaws.com`) | REST API + WebSocket |
+| `dashboard.webhohoe.com` | A (Alias) | CloudFront DNS (`d3j0e55je2ro0i.cloudfront.net`) | 대시보드 화면 (루트와 동일, 별칭) |
+
+> 계획 단계에서는 `api`(ALB) / `hook`(웹훅 수신) / `dashboard`(CloudFront) 3개 서브도메인으로 분리하려 했으나,
+> 실제 구성에서는 **루트 `webhohoe.com`을 프론트엔드(CloudFront)** 에, **`api.webhohoe.com`을 백엔드(ALB)** 에 배정했다.
+> 웹훅 수신도 `api.webhohoe.com/{uuid}`로 ALB를 통해 처리하므로 별도 `hook` 서브도메인은 두지 않았다.
+> `dashboard.webhohoe.com`은 루트와 동일한 CloudFront를 가리키는 별칭으로 남아 있다.
 
 **ACM 인증서**
-- `*.hook.example.com` 와일드카드 인증서 발급
-- DNS 검증 방식으로 발급 후 ALB 리스너에 연결
+- 두 개를 발급(CloudFront는 us-east-1 인증서만 사용 가능하므로 리전별로 별도 발급)
+  - `ap-northeast-2`: `webhohoe.com` + `*.webhohoe.com` (ALB 리스너용)
+  - `us-east-1`: `webhohoe.com` + `*.webhohoe.com` (CloudFront 배포용)
+- DNS 검증 방식으로 발급 후 각각 ALB 리스너 / CloudFront 배포에 연결
 
 ---
 

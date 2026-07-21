@@ -1,66 +1,50 @@
-# Webhook Inspector
+# 웹훅호호이야
+**Frontend**  
+![React](https://img.shields.io/badge/React_18-61DAFB?style=flat-square&logo=React&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=TypeScript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=Vite&logoColor=white)
+![Tailwind_CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=TailwindCSS&logoColor=white)
 
-> ⚠️ **현재 개발 진행 중인 프로젝트입니다.** 미완성 상태이며 프로덕션 사용 불가합니다.
+**Backend**  
 
-백엔드 개발자가 Stripe, GitHub 등 외부 서비스의 웹훅을 실시간으로 수신·검사·디버깅할 수 있는 플랫폼입니다.
+![Spring Boot](https://img.shields.io/badge/Spring_Boot_3.x-6DB33F?style=flat-square&logo=SpringBoot&logoColor=white)
+![Java](https://img.shields.io/badge/Java_21-007396?style=flat-square&logo=OpenJDK&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat-square&logo=Gradle&logoColor=white)
 
----
+**Infra**  
 
-## 프로젝트 구조
+![Amazon S3](https://img.shields.io/badge/Amazon_S3-569A31?style=flat-square&logo=AmazonS3&logoColor=white)
+![CloudFront](https://img.shields.io/badge/CloudFront-FF9900?style=flat-square&logo=AmazonAWS&logoColor=white)
+![Amazon EC2](https://img.shields.io/badge/Amazon_EC2-FF9900?style=flat-square&logo=AmazonEC2&logoColor=white)
+![Auto Scaling](https://img.shields.io/badge/Auto_Scaling-FF9900?style=flat-square&logo=AmazonAWS&logoColor=white)
+![AWS SQS](https://img.shields.io/badge/AWS_SQS-FF4F8B?style=flat-square&logo=AmazonSQS&logoColor=white)
+![DynamoDB](https://img.shields.io/badge/DynamoDB-4053D6?style=flat-square&logo=AmazonDynamoDB&logoColor=white)
+![ALB](https://img.shields.io/badge/Application_Load_Balancer-8C4FFF?style=flat-square&logo=AmazonAWS&logoColor=white)
 
-```
-webhook-inspector/          ← Git 루트 (이 폴더)
-├── backend/                ← Spring Boot 3.x (Java 21)
-├── frontend/               ← React 18 + Vite
-├── plan/                   ← 설계 문서 (PRD, APISpec, ArchSpec 등)
-└── process_state/          ← 작업 진행 상태 추적
-```
+**Realtime**  
 
----
+![WebSocket](https://img.shields.io/badge/WebSocket-010101?style=flat-square&logo=Socket.io&logoColor=white)
+![STOMP](https://img.shields.io/badge/STOMP-6DB33F?style=flat-square&logo=Spring&logoColor=white)
+</br>
+- 외부에서 오는 웹훅(알림)을 대신 받아 실시간으로 보여주는 웹훅 디버깅 도구
+- 줄 세우기(큐)·실시간 푸시·로그인 검증까지 서비스 내부 구조를 직접 설계·구현
+- 동작하는 시제품 완성, 대규모 운영을 위한 안정화는 일부 과제로 남음
+</br>
 
-## 개발 환경 설정
+### 1️⃣ 문제 정의 / 배경
+  - 외부 서비스(GitHub·Stripe 등)는 인터넷 공개 주소로만 웹훅을 보낼 수 있다.
+  - 그런데 개발 중인 내 PC(localhost)는 공개 주소가 없어 웹훅을 직접 받지 못한다.
+  - 그래서 개발자는 그 웹훅이 정확히 어떤 데이터인지 확인하기가 번거롭다.
+  - 기존 도구(ngrok 등)는 주소가 매번 바뀌고 설치가 필요한 불편함이 있다.
 
-### 백엔드 (IntelliJ IDEA)
+## 💻 서비스 기능
 
-```
-File → Open → .../webhook-inspector/backend
-```
+### 핵심 기능 01
+- 개발자별 고유 웹훅 수신 URL 발급 — 추측 불가능한 영구 주소를 사람마다 하나씩 제공
 
-- `backend/` 폴더를 직접 열어야 Gradle 프로젝트로 인식됩니다.
-- 상위 폴더(`webhook-inspector/`)로 열면 Java 프로젝트를 인식하지 못합니다.
-- Run Configuration → Environment variables → `.env file` 항목에 `backend/.env` 경로 지정 후 실행합니다.
+### 핵심 기능 02
+- 수신 웹훅 실시간 시각화 — 웹훅이 도착하면 새로고침 없이 1초 안에 대시보드에 자동 표시
 
-### 프론트엔드 (VS Code)
+</br>
 
-```
-File → Open Folder → .../webhook-inspector/frontend
-```
-
-- `frontend/.env` 파일에 Supabase 환경변수가 설정되어 있어야 합니다.
-
-### Claude Code
-
-```
-claude  (webhook-inspector/ 루트에서 실행)
-```
-
-- 전체 프로젝트 구조를 인식하여 백엔드·프론트엔드·문서를 함께 관리합니다.
-
----
-
-## GitHub Push 주의사항
-
-- **push 루트는 이 폴더(`webhook-inspector/`)** 입니다. `backend/`나 `frontend/` 단독으로 push하지 않습니다.
-- `.env` 파일은 `.gitignore`에 등록되어 있으므로 push되지 않습니다. 환경변수는 `.env_example`을 참고해 별도로 설정하세요.
-- `backend/.env_example`, `frontend/.env_example` 파일에 각 변수의 설명과 예시 값이 있습니다.
-
----
-
-## 이 구조로 설계한 이유
-
-백엔드(Java)와 프론트엔드(React)는 사용하는 IDE와 도구가 다릅니다.
-
-- IntelliJ는 `build.gradle`이 있는 폴더를 루트로 열어야 Java 프로젝트를 정상 인식합니다. 루트에 `build.gradle`이 없으면 실행 버튼이 비활성화됩니다.
-- VS Code는 `package.json`과 Vite 설정이 있는 `frontend/` 폴더를 직접 열어야 개발 서버·자동완성이 정상 동작합니다.
-- 두 프로젝트를 하나의 Git 저장소(모노레포)로 관리하면서도, 각 IDE가 자신의 영역만 정확히 인식하도록 폴더 단위로 열기 경로를 분리했습니다.
-- 환경변수도 `backend/.env`, `frontend/.env`로 분리하여 각 도구가 자신의 `.env`만 참조합니다.
+## 🏛️ 시스템 아키텍처

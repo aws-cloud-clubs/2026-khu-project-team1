@@ -198,12 +198,12 @@ graph LR
     end
 
     subgraph "AWS CDN"
-        CF[CloudFront]
-        S3["S3 s3-dashboard"]
+        CF["CloudFront\nwebhohoe.com / dashboard.webhohoe.com"]
+        S3["S3 webhook-inspector-dashboard"]
     end
 
     subgraph "AWS Load Balancer"
-        ALB["alb-main\nALB + sticky session"]
+        ALB["webhook-inspector-alb\nALB + sticky session\napi.webhohoe.com"]
     end
 
     subgraph "AWS Compute — Auto Scaling Group"

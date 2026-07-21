@@ -4,4 +4,4 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 //...
 @ConfigurationProperties(prefix = "supabase")
-public record JwtProperties(String jwtSecret) {}
+public record JwtProperties(String jwksUri) {}
